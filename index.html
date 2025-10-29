@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Shelf</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* minimal added CSS for positioning textbox near objects */
+    .textbox {
+      display: none;
+      position: absolute;
+      background-color: white;
+      padding: 10px;
+      border: none ;
+      border-radius: 8px;
+      max-width: 250px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 14px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="corner-text top-left">
+  <h1>CLUE 1</h1>
+  <p>SOMETHING TO 'SPARK' CONVERSATION</p>
+</div>
+
+  <div class="image-container">
+    <img src="DRESSINGTABLE.png" alt="Dressing Table">
+  </div>
+<div id="mirrorBtn" class="mirror-container"
+     onmouseover="onMirrorHoverEnter()"
+     onmouseout="onMirrorHoverLeave()">
+  <video id="webcam" autoplay playsinline></video>
+</div>
+
+  <!-- 🕯️ Lighter Button -->
+  <img id="lighterBtn" src="stilllighter.png" alt="lighter" class="shelf-button"
+       onmouseover="onLighterHoverEnter()"
+       onmouseout="onLighterHoverLeave()"
+       style="top:95%; left:80%; width:120px; height:120px; object-fit:contain;">
+
+  <!-- 🌸 Flower Button -->
+  <img id="flowerBtn" src="flowerfinal.png" alt="flower" class="shelf-button"
+       onmouseover="onFlowerHoverEnter()"
+       onmouseout="onFlowerHoverLeave()"
+       style="top:90%; left:30%; width:600px; height:auto; object-fit:contain;">
+
+  <!-- 📒 Notebook Button -->
+  <img id="notebookBtn" src="recipie.png" alt="notebook" class="shelf-button"
+       onmouseover="onNotebookHoverEnter()"
+       onmouseout="onNotebookHoverLeave()"
+       style="top:80%; left:55%; width:600px; height:auto; object-fit:contain;">
+
+  <!-- Textbox -->
+  <div id="textBox" class="textbox"></div>
+
+  <script>
+  const textBox = document.getElementById('textBox');
+  const cornerClue = document.querySelector('.corner-text');
+
+  function showText(message) {
+    cornerClue.classList.add('hidden'); // instantly hide CLUE 1
+    textBox.innerHTML = message;
+    textBox.style.display = 'block';
+    textBox.style.left = '20px';
+    textBox.style.top = '20px';
+  }
+
+  function hideText() {
+    textBox.style.display = 'none';
+    cornerClue.classList.remove('hidden'); // instantly show CLUE 1 again
+  }
+
+  /* ---------------- Lighter ---------------- */
+  function onLighterHoverEnter() {
+    const lighter = document.getElementById('lighterBtn');
+    lighter.src = 'animatedlighter.gif';
+    showText(`
+      <h1>LIGHTER</h1>
+      <p>LOOKING AT FLEETING FRIENDS — HOW WE VIEW FLEETING PEOPLE, AND HOW THEIR PERSPECTIVE IS HEAVILY DEPENDENT ON YOUR CURRENT STATE OR MOOD. OUR PROJECT IS INFLUENCED BY JOHARI’S TRIANGLE: YOUR BLIND SENSE OF SELF, WHICH IS ESPECIALLY PREVALENT WHEN MASKING OR MEETING NEW PEOPLE.</p>
+      <h1><b>CLUE 2</b></h1>
+      <p>SEASONAL ALWAYS THERE, RARELY BLOOM</p>
+    `);
+  }
+
+  function onLighterHoverLeave() {
+    const lighter = document.getElementById('lighterBtn');
+    lighter.src = 'stilllighter.png';
+    hideText();
+  }
+
+  /* ---------------- Flower ---------------- */
+  function onFlowerHoverEnter() {
+    const flower = document.getElementById('flowerBtn');
+    flower.src = 'flower.gif';
+    showText(`
+      <h1>FLOWER</h1>
+      <p> I AM A FLOWER, I REPRESENT PASSING OR SEASONAL FRIENDS. FRIENDS AND AQUAINTANCES CAN COME AND GO AS TIME GOES ON, SIMILAR TO A FLOWER BLOOMING AND WILTING.</p>
+      <h1><b>CLUE 3</b></h1>
+      <p>I AM FOUND IN THE KITCHEN, I CAN BE PASSED DOWN THROUGH FAMILY, I CONTAIN MEASUREMENTS, TSP, TBSP, CUP</p>
+    `);
+  }
+
+  function onFlowerHoverLeave() {
+    const flower = document.getElementById('flowerBtn');
+    flower.src = 'flowerfinal.png';
+    hideText();
+  }
+
+  /* ---------------- Notebook ---------------- */
+  function onNotebookHoverEnter() {
+    const notebook = document.getElementById('notebookBtn');
+    notebook.src = 'recipie.gif';
+    showText(`
+      <h1>RECIPIE</h1>
+      <p>FAMILY AND CLOSE FRIENDS ARE THE ONES WHO KNOW THE INGREDIENTS OF WHO WE ARE - THE PEOPLE WE RETURN TO EVEN WHEN THE RECIPIE CHANGES.</p>
+      <h1><b>CLUE 4</b></h1>
+      <p>FIND WHAT TURNS YOUR GAZE INWARD</p>
+    `);
+  }
+
+  function onNotebookHoverLeave() {
+    const notebook = document.getElementById('notebookBtn');
+    notebook.src = 'recipie.png';
+    hideText();
+    
+  }
+let mirrorTimeout; // store timeout so we can clear if needed
+
+function onMirrorHoverEnter() {
+  const mirror = document.getElementById('mirrorBtn');
+
+  // Clear any existing timeout to avoid overlap
+  if (mirrorTimeout) clearTimeout(mirrorTimeout);
+
+  showText(`
+    <h1>MIRROR</h1>
+    <p>REFLECT ON YOURSELF — YOU CAN ONLY SEE WHAT’S SHOWN, NEVER WHAT’S HIDDEN.</p>
+    <h1><b>CLUE 3</b></h1>
+    <p>WHAT YOU HIDE CAN STILL BE SEEN.</p>
+    <p><a href="https://youtu.be/59lkMwfBbak" target="_blank">Watch this video</a></p>
+  `);
+
+  // Keep the textbox for 10 seconds
+  mirrorTimeout = setTimeout(() => {
+    hideText();
+  }, 10000); // 10000 ms = 10 seconds
+}
+
+function onMirrorHoverLeave() {
+  // Do nothing — textbox will disappear automatically after 10s
+}
+
+
+  /* ---------------- Mirror / Webcam ---------------- */
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      const video = document.getElementById('webcam');
+      if (video) video.srcObject = stream;
+    })
+    .catch(err => {
+      console.log("Camera access denied or unavailable:", err);
+    });
+</script>
+
+</body>
+</html>
